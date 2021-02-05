@@ -2,8 +2,13 @@
 const faker = require('faker');
 const db = require('./index.js');
 
+function parseHrtimeToSeconds(hrtime) {
+  var seconds = (hrtime[0] + (hrtime[1] / 1e9)).toFixed(3);
+  return seconds;
+}
+
 let seed = async (number) => {
-  let start = process.hrtime();
+  var startTime = process.hrtime();
   let generatePlaces = async function(num, cb) {
     let allPlaces = [];
     for (let i = 0; i < num; i++) {
@@ -53,19 +58,11 @@ let seed = async (number) => {
   await generateTodos(number, async (data) => {
     await db.saveTodos(data)
   })
-  let end = process.hrtime(start);
-  console.log(end);
-  console.log('completed in: ' + end[1] / 1000000);
+  var elapsedSeconds = parseHrtimeToSeconds(process.hrtime(startTime));
+  console.log(`It take ${elapsedSeconds} to insert ${number} documents into the places collection and ${number} documents into the todos collection.`);
 }
 
-let timer = async (num) => {
-  let begin = process.hrtime();
-  await seed(num)
-  let stop = process.hrtime(begin);
-  console.log('end ' + stop[1] / 1000000)
-}
-
-timer(1000);
+seed(2000);
 
 
 

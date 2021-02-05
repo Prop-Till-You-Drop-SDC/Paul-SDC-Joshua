@@ -19,7 +19,6 @@ let savePlaces =  async (allPlaces) => {
   let hrstart = process.hrtime();
   await Places.create(allPlaces);
   let hrend = process.hrtime(hrstart);
-  console.log(hrend);
   console.log('seeding places: ' + hrend[1] / 1000000);
 }
 
@@ -38,7 +37,6 @@ let saveTodos = async (todos) => {
   let hrstart = process.hrtime();
   await Todo.create(todos);
   let hrend = process.hrtime(hrstart);
-  console.log(hrend);
   console.log('seeding todos: ' + hrend[1] / 1000000);
 }
 
