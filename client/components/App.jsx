@@ -71,8 +71,8 @@ class App extends React.Component {
   }
 
   getListings() {
-    axios.get('http://18.221.87.209:3003/api/demop')
-    //axios.get('http://localhost:3003/api/demop')
+    // axios.get('http://18.221.87.209:3003/api/demop')
+    axios.get('http://localhost:3003/api/demop')
       .then((res) => {
         this.setState({
           ...this.state,
@@ -86,8 +86,8 @@ class App extends React.Component {
   }
 
   getThings() {
-    axios.get('http://18.221.87.209:3003/api/demot')
-    //axios.get('http://localhost:3003/api/demot')
+    // axios.get('http://18.221.87.209:3003/api/demot')
+    axios.get('http://localhost:3003/api/demot')
       .then((res) => {
         this.setState({
           ...this.state,
