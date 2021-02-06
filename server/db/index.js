@@ -1,26 +1,48 @@
-const mysql = require('mysql');
-const createTables = require('./config');
-const Promise = require('bluebird');
-require('dotenv').config();
+const mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost:27017/places', {useNewUrlParser: true, useUnifiedTopology: true, sslValidate: false });
 
-const database = 'placesToStay';
+const db = mongoose.connection;
 
-const user = process.env.DB_USER;
-const pass = process.env.DB_PASS;
+let placeSchema = mongoose.Schema({
+  location: String,
+  description: String,
+  picture: String,
+  stars: Number,
+  reviews: Number,
+  price: Number,
+  beds: Number,
+})
 
-const connection = mysql.createConnection({
-  host: 'localhost',
-  user: user,
-  password: pass,
-  multipleStatements: true
-});
+let Places = mongoose.model('Places', placeSchema);
 
-const db = Promise.promisifyAll(connection, { multiArgs: true });
+let savePlaces =  async (allPlaces) => {
+  let hrstart = process.hrtime();
+  await Places.create(allPlaces);
+  let hrend = process.hrtime(hrstart);
+  console.log('seeding places: ' + hrend[1] / 1000000);
+}
 
-db.connectAsync()
-  .then(() => console.log(`Connected to ${database} database as ID ${db.threadId}`))
-  .then(() => db.queryAsync(`CREATE DATABASE IF NOT EXISTS ${database}`))
-  .then(() => db.queryAsync(`USE ${database}`))
-  .then(() => createTables(db));
+let todoSchema = mongoose.Schema({
+    location: String,
+    description: String,
+    pic: String,
+    stars: Number,
+    reviews: Number,
+    price: Number,
+})
 
-module.exports = db;
+let Todo = mongoose.model('Todo', todoSchema);
+
+let saveTodos = async (todos) => {
+  let hrstart = process.hrtime();
+  await Todo.create(todos);
+  let hrend = process.hrtime(hrstart);
+  console.log('seeding todos: ' + hrend[1] / 1000000);
+}
+
+
+module.exports = {
+  db,
+  savePlaces,
+  saveTodos
+}
