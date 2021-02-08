@@ -7,7 +7,8 @@
     "start": "node server.js",
     "dev": "nodemon server.js",
     "seed": "node ./db/seed.js",
-    "dseed": "node ./db/dseed.js"
+    "dseed": "node ./db/dseed.js",
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
@@ -16,8 +17,11 @@
     "bluebird": "^3.7.2",
     "body-parser": "^1.19.0",
     "compression": "^1.7.4",
+    "connect-flash": "^0.1.1",
     "cors": "^2.8.5",
+    "csv-writer": "^1.6.0",
     "express": "^4.17.1",
+    "fs": "0.0.1-security",
     "mongoose": "^5.11.15"
   },
   "devDependencies": {

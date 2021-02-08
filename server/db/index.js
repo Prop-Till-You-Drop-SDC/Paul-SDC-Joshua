@@ -16,10 +16,7 @@ let placeSchema = mongoose.Schema({
 let Places = mongoose.model('Places', placeSchema);
 
 let savePlaces =  async (allPlaces) => {
-  let hrstart = process.hrtime();
   await Places.create(allPlaces);
-  let hrend = process.hrtime(hrstart);
-  console.log('seeding places: ' + hrend[1] / 1000000);
 }
 
 let todoSchema = mongoose.Schema({
@@ -34,10 +31,7 @@ let todoSchema = mongoose.Schema({
 let Todo = mongoose.model('Todo', todoSchema);
 
 let saveTodos = async (todos) => {
-  let hrstart = process.hrtime();
-  await Todo.create(todos);
-  let hrend = process.hrtime(hrstart);
-  console.log('seeding todos: ' + hrend[1] / 1000000);
+  await Todo.create(todos)
 }
 
 
