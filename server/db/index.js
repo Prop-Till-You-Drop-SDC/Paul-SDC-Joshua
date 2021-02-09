@@ -19,6 +19,11 @@ let savePlaces =  async (allPlaces) => {
   await Places.create(allPlaces);
 }
 
+let loadPlaces = async (loc) => {
+  let currentPlaces = await Places.find({ location: loc }).limit(12);
+  return currentPlaces;
+}
+
 let todoSchema = mongoose.Schema({
     location: String,
     description: String,
@@ -34,9 +39,16 @@ let saveTodos = async (todos) => {
   await Todo.create(todos)
 }
 
+let loadTodos = async (loc) => {
+  let currentTodos = await Todo.find({ location: loc }).limit(20);
+  return currentTodos;
+}
+
 
 module.exports = {
   db,
   savePlaces,
-  saveTodos
+  saveTodos,
+  loadPlaces,
+  loadTodos
 }
