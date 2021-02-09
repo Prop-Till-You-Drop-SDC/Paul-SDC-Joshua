@@ -1,68 +1,92 @@
-// const ObjectsToCsv = require('objects-to-csv');
+const createCsvWriter = require('csv-writer').createObjectCsvWriter;
+const fs = require('fs');
 const faker = require('faker');
-const db = require('./index.js');
+const writePlaces = fs.createWriteStream('./places.csv');
+writePlaces.write('location,description,picture,stars,reviews,price,beds\n', 'utf8');
+const writeTodos = fs.createWriteStream('./todos.csv');
+writeTodos.write('location,description,picture,stars,reviews,price\n', 'utf8')
 
-function parseHrtimeToSeconds(hrtime) {
-  var seconds = (hrtime[0] + (hrtime[1] / 1e9)).toFixed(3);
-  return seconds;
-}
-
-let seed = async (number) => {
-  var startTime = process.hrtime();
-  let generatePlaces = async function(num, cb) {
-    let allPlaces = [];
-    for (let i = 0; i < num; i++) {
-      let newObj = {
-        location: faker.address.state(),
-        description: faker.random.words(20),
-        picture: "http://placeimg.com/200/200/arch",
-        stars: faker.random.number({min: 1, max: 5}),
-        reviews: faker.random.number({min: 20, max: 180}),
-        price: faker.random.number({min: 30, max: 400}),
-        beds: faker.random.number({min: 1, max: 10})
+function writeAllPlaces(writer, encoding, callback) {
+  console.time('places');
+  let i = 10000000;
+  let id = 0;
+  function write() {
+    let ok = true;
+    do {
+      i -= 1;
+      id += 1;
+      const location = faker.address.state();
+      const description = faker.random.words(20);
+      const picture = 'http://placeimg.com/200/200/arch';
+      const stars = faker.random.number({ min: 1, max: 5 });
+      const reviews = faker.random.number({ min: 20, max: 180 });
+      const price = faker.random.number({ min: 30, max: 400 });
+      const beds = faker.random.number({ min: 1, max: 10 });
+      const data = `${location},${description},${picture},${stars},${reviews},${price},${beds}\n`;
+      if (i === 0) {
+        writer.write(data, encoding, callback);
+      } else {
+        // see if we should continue, or wait
+        // don't pass the callback, because we're not done yet.
+        ok = writer.write(data, encoding);
       }
-      allPlaces.push(newObj);
-      if (allPlaces.length >= 1000) {
-        await cb(allPlaces);
-        // const csv = new ObjectsToCsv(allPlaces);
-        // await csv.toDisk('/Users/paulvanleuven/Documents/Code/SDC/Paul-SDC-Joshua/server/db/places.csv');
-        allPlaces = [];
-      }
-
-    }
-   }
-   await generatePlaces(number, async (data) => {
-     await db.savePlaces(data)
-  });
-
-  let generateTodos = async function(num, cb) {
-    let allTodos = [];
-    for (let i = 0; i < num; i++) {
-      let newObj = {
-        location: faker.address.state(),
-        description: faker.random.words(20),
-        picture: "http://placeimg.com/200/200/nature",
-        stars: faker.random.number({min: 1, max: 5}),
-        reviews: faker.random.number({min: 20, max: 180}),
-        price: faker.random.number({min: 10, max: 100})
-      }
-      allTodos.push(newObj);
-      if (allTodos.length >= 1000) {
-        await cb(allTodos)
-        // const csv = new ObjectsToCsv(allPlaces);
-        // await csv.toDisk('/Users/paulvanleuven/Documents/Code/SDC/Paul-SDC-Joshua/server/db/todos.csv');
-        allTodos = [];
-      }
+    } while (i > 0 && ok);
+    if (i > 0) {
+      // had to stop early!
+      // write some more once it drains
+      writer.once('drain', write);
     }
   }
-  await generateTodos(number, async (data) => {
-    await db.saveTodos(data)
-  })
-  var elapsedSeconds = parseHrtimeToSeconds(process.hrtime(startTime));
-  console.log(`It take ${elapsedSeconds} to insert ${number} documents into the places collection and ${number} documents into the todos collection.`);
+  write()
 }
 
-seed(2000);
+function writeAllTodos(writer, encoding, callback) {
+  console.time('todos')
+  let i = 10000000;
+  let id = 0;
+  function write() {
+    let ok = true;
+    do {
+      i -= 1;
+      id += 1;
+      const location = faker.address.state();
+      const description = faker.random.words(20);
+      const picture = 'http://placeimg.com/200/200/nature';
+      const stars = faker.random.number({ min: 1, max: 5 });
+      const reviews = faker.random.number({ min: 20, max: 100 });
+      const price = faker.random.number({ min: 30, max: 120 });
+      const data = `${location},${description},${picture},${stars},${reviews},${price}\n`;
+      if (i === 0) {
+        writer.write(data, encoding, callback);
+      } else {
+        // see if we should continue, or wait
+        // don't pass the callback, because we're not done yet.
+        ok = writer.write(data, encoding);
+      }
+    } while (i > 0 && ok);
+    if (i > 0) {
+      // had to stop early!
+      // write some more once it drains
+      writer.once('drain', write);
+    }
+  }
+  write()
+}
+
+
+let timer = async () => {
+  writeAllPlaces(writePlaces, 'utf-8', () => {
+    console.timeEnd('places');
+    writePlaces.end();
+  });
+  writeAllTodos(writeTodos, 'utf-8', () => {
+    console.timeEnd('todos');
+    writeTodos.end();
+  })
+}
+
+timer();
+
 
 
 
