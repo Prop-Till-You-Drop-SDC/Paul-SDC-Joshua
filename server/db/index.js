@@ -40,7 +40,7 @@ let saveTodos = async (todos) => {
 }
 
 let loadTodos = async (loc) => {
-  let currentTodos = await Todo.find({ location: loc }).limit(20);
+  let currentTodos = await Todo.find({ location: loc }).lean().limit(20);
   return currentTodos;
 }
 

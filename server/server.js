@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const db = require('./db/index.js');
 const cors = require('cors');
 const PORT = 3003;
+require('newrelic');
 
 const app = express();
 
