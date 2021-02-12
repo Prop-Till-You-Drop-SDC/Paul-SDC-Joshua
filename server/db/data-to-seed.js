@@ -17,7 +17,7 @@ function writeAllPlaces(writer, encoding, callback) {
       id += 1;
       const location = faker.address.state();
       const description = faker.random.words(20);
-      const picture = 'http://placeimg.com/200/200/arch';
+      const picture = 'https://loremflickr.com/200/200/house?random=' + i;
       const stars = faker.random.number({ min: 1, max: 5 });
       const reviews = faker.random.number({ min: 20, max: 180 });
       const price = faker.random.number({ min: 30, max: 400 });
@@ -51,7 +51,7 @@ function writeAllTodos(writer, encoding, callback) {
       id += 1;
       const location = faker.address.state();
       const description = faker.random.words(20);
-      const picture = 'http://placeimg.com/200/200/nature';
+      const picture = 'https://loremflickr.com/200/200/nature?random=' + i;
       const stars = faker.random.number({ min: 1, max: 5 });
       const reviews = faker.random.number({ min: 20, max: 100 });
       const price = faker.random.number({ min: 30, max: 120 });
