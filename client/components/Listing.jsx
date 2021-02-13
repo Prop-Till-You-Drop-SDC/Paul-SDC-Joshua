@@ -121,7 +121,7 @@ class Listing extends React.Component {
                 <HeartStyle></HeartStyle>
             }
           </div>
-          <img src={this.props.listing.pic} style={this.imgStyle} />
+          <img src={this.props.listing.picture} style={this.imgStyle} />
         </div>
         <div id='reviewContainer' style={this.reviewContStyle}>
           {

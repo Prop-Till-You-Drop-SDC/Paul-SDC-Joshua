@@ -11,6 +11,7 @@ class App extends React.Component {
     this.state = {
       isLoaded: false,
       thingsLoaded: false,
+      currentLocation: 'Wisconsin',
       listings: [],
       pageOne: [],
       pageTwo: [],
@@ -66,16 +67,15 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    this.getListings();
-    this.getThings();
+    let searchLoc = this.state.currentLocation;
+    this.getListings(searchLoc);
+    this.getThings(searchLoc);
   }
 
-  getListings() {
-    // axios.get('http://18.221.87.209:3003/api/demop')
-    axios.get('http://localhost:3003/api/demop')
+  getListings(loc) {
+    axios.get('http://localhost:3003/places/' + loc)
       .then((res) => {
         this.setState({
-          ...this.state,
           isLoaded: true,
           listings: res.data,
           pageOne: res.data.slice(0, 4),
@@ -85,20 +85,18 @@ class App extends React.Component {
       })
   }
 
-  getThings() {
-    // axios.get('http://18.221.87.209:3003/api/demot')
-    axios.get('http://localhost:3003/api/demot')
-      .then((res) => {
-        this.setState({
-          ...this.state,
-          thingsLoaded: true,
-          things: res.data,
-          thingsOne: res.data.slice(0, 5),
-          thingsTwo: res.data.slice(5, 10),
-          thingsThree: res.data.slice(10, 15),
-          thingsFour: res.data.slice(15)
-        });
-      })
+  getThings(loc) {
+    axios.get('http://localhost:3003/todos/' + loc)
+    .then((res) => {
+      this.setState({
+        thingsLoaded: true,
+        things: res.data,
+        thingsOne: res.data.slice(0, 5),
+        thingsTwo: res.data.slice(5, 10),
+        thingsThree: res.data.slice(10, 15),
+        thingsFour: res.data.slice(15)
+      });
+    })
   }
 
   //  Carousel Arrows
